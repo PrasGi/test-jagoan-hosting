@@ -1,0 +1,22 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import "./App.css";
+import HomePage from "./view/pages/HomePage";
+import LoginPage from "./view/pages/LoginPage";
+import ResidentPage from "./view/pages/ResidentPage";
+import HousePage from "./view/pages/HousePage";
+
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/" element={<HomePage />} />
+        <Route path="/resident" element={<ResidentPage />} />
+        <Route path="/house" element={<HousePage />} />
+      </Routes>
+    </Router>
+  );
+}
+
+export default App;
