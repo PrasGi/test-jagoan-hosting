@@ -50,7 +50,7 @@ php artisan serve
 npm install
 ```
 
-10. lalu untuk menjalankan serve bisa ketik di terminal
+10. lalu untuk menjalankan server bisa ketik di terminal
 
 ```
 npm run dev
@@ -59,5 +59,8 @@ npm run dev
 11. kemudia klik url yang muncul itu akan mengarahkan ke halaman awal project (login page)
 
 untuk login bisa menggunakan account ini:
+
+```
 email: rt@gmail.com
 password: password
+```
