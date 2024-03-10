@@ -319,7 +319,7 @@ const ResidentPage = () => {
               <form>
                 <div className="mb-3">
                   <label htmlFor="add-image-ktp" className="form-label">
-                    KTP (optional)
+                    KTP
                   </label>
                   <input
                     type="file"

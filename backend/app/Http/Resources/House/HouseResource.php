@@ -19,6 +19,7 @@ class HouseResource extends JsonResource
             'name' => $this->name,
             'status' => $this->status,
             'resident' => $this->status == 'dihuni' ? $this->residents : null,
+            'resident_histories' => $this->historyResidents,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at
         ];

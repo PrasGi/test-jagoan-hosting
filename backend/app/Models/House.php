@@ -26,7 +26,19 @@ class House extends Model
             'id', // Foreign key pada tabel target (Resident)
             'id', // Lokal key pada tabel asal (House)
             'resident_id' // Lokal key pada tabel pivot
-        )->latest()->limit(1);
+        )->orderByDesc('house_resident_histories.created_at')->limit(1);
+    }
+
+    public function historyResidents()
+    {
+        return $this->hasManyThrough(
+            Resident::class,
+            HouseResidentHistory::class,
+            'house_id', // Foreign key pada tabel pivot
+            'id', // Foreign key pada tabel target (Resident)
+            'id', // Lokal key pada tabel asal (House)
+            'resident_id' // Lokal key pada tabel pivot
+        )->orderBy('house_resident_histories.created_at');
     }
 
     public function housePaymentHistories()

@@ -186,7 +186,7 @@ class HousePaymentHistoryController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Monthly summary report generated successfully',
-            'data' => $datas
+            'data' => new HousePaymentHistoryCollection($datas)
         ]);
     }
 }

@@ -1,5 +1,6 @@
 import HouseInterface from "../interfaces/HouseInterface";
 import AddHouseInterface from "../interfaces/AddHouseInterface";
+import StoreResidentToHouseInterface from "../interfaces/StoreResidentToHouseInterface";
 
 class HouseService {
   getAllData = async () => {
@@ -65,6 +66,27 @@ class HouseService {
         Authorization: "Bearer " + sessionStorage.getItem("token"),
       },
     });
+    const datas = await response.json();
+    return datas;
+  };
+
+  storeResidentToHouse = async (
+    residentToHouse: StoreResidentToHouseInterface
+  ) => {
+    const response = await fetch(
+      `http://localhost:8000/api/house-resident-histories`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + sessionStorage.getItem("token"),
+        },
+        body: JSON.stringify({
+          house_id: residentToHouse.houseId,
+          resident_id: residentToHouse.residentId,
+        }),
+      }
+    );
     const datas = await response.json();
     return datas;
   };

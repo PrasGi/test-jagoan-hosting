@@ -4,7 +4,8 @@ interface HouseInterface {
   id: number;
   name: string;
   status: string;
-  resident: ResidentInterface;
+  resident: ResidentInterface[] | null;
+  resident_histories: ResidentInterface[] | null;
   created_at: Date;
   updated_at: Date;
 }

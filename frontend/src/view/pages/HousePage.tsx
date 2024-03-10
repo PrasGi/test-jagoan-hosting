@@ -12,22 +12,29 @@ const HousePage = () => {
   const houseService = new HouseService();
   const residentService = new ResidentService();
   const [datas, setDatas] = useState<HouseInterface[]>([]);
-  const dataResident = residentService.getAllData();
+  const [dataResident, setDataResident] = useState<ResidentInterface[]>([]);
   const [success, setSuccess] = useState<string | null>(null);
   const [selectedHouse, setSelectedHouse] = useState<HouseInterface | null>(
     null
   );
+
   const [addHouse, setAddHouse] = useState({
     name: "",
     status: "tidak dihuni",
   });
 
+  const [storeResidentToHouse, setStoreResidentToHouse] = useState({
+    houseId: "0",
+    residentId: "0",
+  });
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await houseService.getAllData();
-        console.log(data);
-        setDatas(data);
+        const dataHouse = await houseService.getAllData();
+        const dataResident = await residentService.getAllData();
+        setDatas(dataHouse);
+        setDataResident(dataResident);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -69,7 +76,10 @@ const HousePage = () => {
   };
 
   const handleViewModal = (house: HouseInterface) => {
-    console.log(house);
+    setSelectedHouse(house);
+  };
+
+  const handleHistoryModal = (house: HouseInterface) => {
     setSelectedHouse(house);
   };
 
@@ -81,6 +91,19 @@ const HousePage = () => {
     }
   };
 
+  const handleStoreResidentToHouse = async () => {
+    const datas = await houseService.storeResidentToHouse(storeResidentToHouse);
+    if (datas.status_code == 201) {
+      setSuccess(datas.message);
+      const data = await houseService.getAllData();
+      setDatas(data);
+    }
+    setStoreResidentToHouse({
+      houseId: "0",
+      residentId: "0",
+    });
+  };
+
   return (
     <>
       <ResourceHelper />
@@ -89,11 +112,19 @@ const HousePage = () => {
       <main className="main" id="main">
         <button
           type="button"
-          className="btn btn-dark mb-2"
+          className="btn btn-dark me-2 mb-2"
           data-bs-toggle="modal"
           data-bs-target="#addModal"
         >
-          <i className="bi bi-plus"></i> add data
+          <i className="bi bi-plus"></i> add house
+        </button>
+        <button
+          type="button"
+          className="btn btn-dark me-2 mb-2"
+          data-bs-toggle="modal"
+          data-bs-target="#storeModal"
+        >
+          <i className="bi bi-plus"></i> add resident to house
         </button>
         {success && (
           <div className="alert alert-success" role="alert">
@@ -135,6 +166,15 @@ const HousePage = () => {
                       )}
                       <button
                         type="button"
+                        className="btn btn-dark me-1"
+                        data-bs-toggle="modal"
+                        data-bs-target="#historyModal"
+                        onClick={() => handleHistoryModal(data)}
+                      >
+                        <i className="bi bi-clock-history"></i>
+                      </button>
+                      <button
+                        type="button"
                         className="btn btn-warning me-1"
                         data-bs-toggle="modal"
                         data-bs-target="#updateModal"
@@ -163,7 +203,7 @@ const HousePage = () => {
         className="modal fade"
         id="addModal"
         tabIndex={-1}
-        aria-labelledby="exampleModalLabel"
+        aria-labelledby="addModalLabel"
         aria-hidden="true"
       >
         <div className="modal-dialog">
@@ -241,7 +281,7 @@ const HousePage = () => {
           className="modal fade"
           id="updateModal"
           tabIndex={-1}
-          aria-labelledby="exampleModalLabel"
+          aria-labelledby="updateModalLabel"
           aria-hidden="true"
         >
           <div className="modal-dialog">
@@ -314,13 +354,13 @@ const HousePage = () => {
         </div>
       )}
 
-      {/* Update Modal */}
+      {/* view Modal */}
       {selectedHouse && selectedHouse.resident && (
         <div
           className="modal fade"
           id="viewModal"
           tabIndex={-1}
-          aria-labelledby="exampleModalLabel"
+          aria-labelledby="viewModalLabel"
           aria-hidden="true"
         >
           <div className="modal-dialog">
@@ -337,25 +377,196 @@ const HousePage = () => {
                 ></button>
               </div>
               <div className="modal-body">
-                <form>
-                  <div className="mb-3">
-                    <label htmlFor="add-fullname" className="form-label">
-                      Name resident
-                    </label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="add-fullname"
-                      value={selectedHouse.resident.fullname}
-                      readOnly
-                    />
-                  </div>
-                </form>
+                {selectedHouse.status == "dihuni" ? (
+                  <form>
+                    <div className="mb-3">
+                      <label htmlFor="add-fullname" className="form-label">
+                        Name resident
+                      </label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="add-fullname"
+                        value={selectedHouse.resident[0].fullname}
+                        readOnly
+                      />
+                    </div>
+                  </form>
+                ) : (
+                  <p>doesn't have resident now</p>
+                )}
               </div>
             </div>
           </div>
         </div>
       )}
+
+      {/* History Modal */}
+      {selectedHouse && selectedHouse.resident_histories && (
+        <>
+          <div
+            className="modal fade"
+            id="historyModal"
+            tabIndex={-1}
+            aria-labelledby="storeModalLabel"
+            aria-hidden="true"
+          >
+            <div className="modal-dialog">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                    Store Resident To House
+                  </h5>
+                  <button
+                    type="button"
+                    className="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                  ></button>
+                </div>
+                <div className="modal-body">
+                  <form>
+                    <div className="mb-3">
+                      <label htmlFor="add-fullname" className="form-label">
+                        History resident house {selectedHouse.name}
+                      </label>
+                      <table className="table table-bordered shadow-sm">
+                        <thead>
+                          <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Name resident</th>
+                            <th scope="col">Status Resident</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {selectedHouse.resident_histories.map(
+                            (data, index) => {
+                              return (
+                                <tr key={index}>
+                                  <th scope="row">{index + 1}</th>
+                                  <td>{data.fullname}</td>
+                                  <td>{data.status_resident}</td>
+                                </tr>
+                              );
+                            }
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+                  </form>
+                </div>
+
+                <div className="modal-footer">
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={handleStoreResidentToHouse} // Call handleAdd when "Save" button clicked
+                  >
+                    Save
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* Store Resident To House Modal */}
+      <div
+        className="modal fade"
+        id="storeModal"
+        tabIndex={-1}
+        aria-labelledby="storeModalLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="exampleModalLabel">
+                Store Resident To House
+              </h5>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body">
+              <form>
+                <div className="mb-3">
+                  <label htmlFor="add-store-resident" className="form-label">
+                    Resident
+                  </label>
+                  <select
+                    className="form-select"
+                    id="add-store-resident"
+                    value={storeResidentToHouse.residentId}
+                    onChange={(e) =>
+                      setStoreResidentToHouse({
+                        ...storeResidentToHouse,
+                        residentId: e.target.value,
+                      })
+                    }
+                    required
+                  >
+                    <option value="0">Select resident</option>
+                    {dataResident.map((resident) => {
+                      return (
+                        <option
+                          key={`${resident.id}${resident.fullname}`}
+                          value={resident.id}
+                        >
+                          {resident.fullname}
+                        </option>
+                      );
+                    })}
+                  </select>
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="add-store-house" className="form-label">
+                    House
+                  </label>
+                  <select
+                    className="form-select"
+                    id="add-store-house"
+                    value={storeResidentToHouse.houseId}
+                    onChange={(e) =>
+                      setStoreResidentToHouse({
+                        ...storeResidentToHouse,
+                        houseId: e.target.value,
+                      })
+                    }
+                    required
+                  >
+                    <option value="0">Select house</option>
+                    {datas.map((house) => {
+                      return (
+                        <option
+                          key={`${house.id}${house.name}`}
+                          value={house.id}
+                        >
+                          {house.name}
+                        </option>
+                      );
+                    })}
+                  </select>
+                </div>
+              </form>
+            </div>
+
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={handleStoreResidentToHouse} // Call handleAdd when "Save" button clicked
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </>
   );
 };

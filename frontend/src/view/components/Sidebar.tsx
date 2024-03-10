@@ -44,12 +44,23 @@ const Sidebar = () => {
         <li className="nav-item">
           <Link
             className={`nav-link ${
-              currentPath == "/house/payment" ? "active" : ""
+              currentPath == "/payment" ? "active" : ""
             } collapsed`}
-            to="/house/payment"
+            to="/payment"
           >
             <i className="bi bi-wallet"></i>
             <span>House Payment</span>
+          </Link>
+        </li>
+        <li className="nav-item">
+          <Link
+            className={`nav-link ${
+              currentPath == "/detail" ? "active" : ""
+            } collapsed`}
+            to="/detail"
+          >
+            <i className="bi bi-file-person"></i>
+            <span>Detail Resume</span>
           </Link>
         </li>
       </ul>

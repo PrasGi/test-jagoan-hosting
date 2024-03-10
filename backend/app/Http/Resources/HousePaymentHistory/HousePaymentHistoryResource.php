@@ -16,8 +16,8 @@ class HousePaymentHistoryResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'resident_id' => $this->resident,
-            'house_id' => $this->house,
+            'resident' => $this->resident,
+            'house' => $this->house,
             'type_payment' => $this->type_payment,
             'type_time_payment' => $this->type_time_payment,
             'amount' => $this->amount,
