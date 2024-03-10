@@ -6,7 +6,7 @@ Untuk fitur bisa dilihat pada file pdf dengan nama fitur.pdf di dalam project, d
 
 berikut adalah langkah langkah cara penginstallan, atau bisa juga menonton vidio yang sudah saya buat, di sana juga ada penjelasan tentang fitur apa saja yang ada pada project ini.
 
-link vidi0: [https://drive.google.com/file/d/1zeAH9GGqsxfLiqW8zGLmmP55ZhSWI3et/view?usp=drive_link]
+link vidio: [https://drive.google.com/file/d/1zeAH9GGqsxfLiqW8zGLmmP55ZhSWI3et/view?usp=drive_link]
 
 1. setelah mendownload project langkah pertama adalah membuka folder backend ke dalam code editor, kemudian ubah nama file .env.example menjadi .env
 
